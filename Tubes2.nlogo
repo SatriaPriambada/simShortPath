@@ -6,6 +6,8 @@ globals
   optimal-path ; the optimal path, list of patches from source to destination
 ]
 
+breed [ pieces piece ]   ;; pieces Tetris L
+
 ; patch variables used
 patches-own
 [
@@ -22,6 +24,55 @@ turtles-own
   current-path ; part of the path that is left to be traversed
 ]
 
+pieces-own [
+  x y      ;; these are the piece's offsets relative to turtle 0
+]
+
+to setup-l ;;Piece Procedure
+  if (who mod 4 = 1) [ set x  1 set y  0 ]
+  if (who mod 4 = 2) [ set x -1 set y  0 ]
+  if (who mod 4 = 3) [ set x -1 set y -1 ]
+end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Overlap prevention Reporters ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+to-report clear? [p]  ;; p is a patch
+  if p = nobody [ report false ]
+  report (not any? pieces-on p) and ([pcolor] of p != gray)
+end
+
+to-report clear-at? [xoff yoff]
+  report all? pieces [clear? patch-at xoff yoff]
+end
+
+to-report rotate-left-clear?
+  report all? pieces [clear? patch-at (- y) x]
+end
+
+to-report rotate-right-clear?
+  report all? pieces [clear? patch-at y (- x)]
+end
+
+to rotate-me-right  ;; Piece Procedure
+  let oldx x
+  let oldy y
+  set x oldy
+  set y (- oldx)
+  set xcor ([xcor] of turtle 0) + x
+  set ycor ([ycor] of turtle 0) + y
+end
+
+to rotate-me-left  ;; Piece Procedure
+  let oldx x
+  let oldy y
+  set x (- oldy)
+  set y oldx
+  set xcor ([xcor] of turtle 0) + x
+  set ycor ([ycor] of turtle 0) + y
+end
+
+
 ; setup the world
 to Setup
   ;; (for this model to work with NetLogo's new plotting features,
@@ -34,14 +85,19 @@ end
 
 ; create the source and destination at two random locations on the view
 to create-source-and-destination
-  ask one-of patches with [pcolor = black]
-  [
-    set pcolor blue
-    set plabel "source"
-    sprout 1
+  repeat population[
+    ask one-of patches with [pcolor = black]
     [
-      set color red
-      pd
+      set pcolor blue
+      ;set plabel "source"
+      sprout 1
+      [
+        set color red
+        ;setup-l
+        set size 3
+        set shape "L"
+        pd
+      ]
     ]
   ]
   ask one-of patches with [pcolor = black]
@@ -156,10 +212,10 @@ end
 ; and make the agent move to the destination via the path found
 to find-shortest-path-to-destination
   reset-ticks
-  ask one-of turtles
+  ask turtles
   [
-    move-to one-of patches with [plabel = "source"]
-    set path find-a-path one-of patches with [plabel = "source"] one-of patches with [plabel = "destination"]
+    ;move-to one-of patches with [pcolor = blue]
+    set path find-a-path patch-here one-of patches with [plabel = "destination"]
     set optimal-path path
     set current-path path
   ]
@@ -287,19 +343,20 @@ end
 
 ; make the turtle traverse (move through) the path all the way to the destination patch
 to move
-  ask one-of turtles
-  [
-    while [length current-path != 0]
+    ask turtles
     [
-      go-to-next-patch-in-current-path
-      pd
-      wait 0.05
+      while [length current-path != 0]
+      [
+        go-to-next-patch-in-current-path
+        pd
+        wait 0.05
+
+      ]
+      if length current-path = 0
+      [
+        pu
+      ]
     ]
-    if length current-path = 0
-    [
-      pu
-    ]
-  ]
 end
 
 to go-to-next-patch-in-current-path
@@ -444,10 +501,10 @@ end
 GRAPHICS-WINDOW
 229
 39
-905
-521
-15
-10
+991
+650
+17
+13
 21.5
 1
 10
@@ -458,10 +515,10 @@ GRAPHICS-WINDOW
 0
 0
 1
--15
-15
--10
-10
+-17
+17
+-13
+13
 0
 0
 1
@@ -597,7 +654,7 @@ CHOOSER
 Select-element
 Select-element
 "source" "destination" "obstacles" "erase obstacles"
-0
+2
 
 TEXTBOX
 919
@@ -686,6 +743,21 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+13
+257
+185
+290
+Population
+Population
+0
+100
+5
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## TUGAS 2 NETLOGO
@@ -888,6 +960,13 @@ Rectangle -7500403 true true 45 120 255 285
 Rectangle -16777216 true false 120 210 180 285
 Polygon -7500403 true true 15 120 150 15 285 120
 Line -16777216 false 30 120 270 120
+
+l
+true
+0
+Rectangle -2674135 false false 90 30 210 90
+Rectangle -2674135 true false 90 30 210 90
+Rectangle -2674135 true false 90 30 150 210
 
 leaf
 false
