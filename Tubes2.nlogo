@@ -695,66 +695,40 @@ Tugas 2 adlah membuat simulasi model pencarian jarak dengan A* path finding algo
 ## THE INTERFACE
 Berikut adalah user intergace yang dimiliki oleh program:
 
--> Setup (button): Clicking this button resets the simulation. This clears the view and places the source and destination patches at two random locations in the view.
+-> Setup : Tombol ini digunakan untuk membersihkan tampilan sebelum simulasi dimulai.
 
--> Select-element (chooser): This is used to select a particular maze element that can then be drawn on to the view of the model using the Draw elements button and the mouse. The different maze elements are:
-	+> source: Select this to place the source patch at a different location in the
-		   view.
+-> Select-element : Bagian ini digunakan untuk memilih komponen yang ingin digambarkan pada peta layar. Kompenen yang dapat dipilih antaralain:
+	+> source: Titik awal dari objek.
 
-	+> destination: Select this to place the destination patch at a different
-			location in the view.
+	+> destination: Tujuan final objek
 
-	+> obstacles: Select this to place obstacles in the view. This can be used to
+	+> obstacles: Halangan yang tidak dapat dileawti objek
 
-      design a maze in the view, which can then be navigated using A* to
+	+> erase obstacles: Untuk menghilangkan objek
 
+-> Draw elements : Tombol ini digunakan untuk menggambar komponen yang telah dipilih pada select-ement. Cara penggunaan adalah dengan menekan tombol ini dan lalu gunakan mouse untuk menggambar pada layar. Setelah selesai tekan tombol ini sekali lagi.
 
-      find a path between the source patch and the destination patch.
+-> Find an optimal path (A* dan Dijkstra): Tombol ini akan menentukan jalan terdekat melalui algoritma A* atau Dijkstra
 
-	+> erase obstacles: Select this to erase existing obstacles in the view. This can
-    be used to remove an unneeded obstacle from the view, and can 			    also be used in designing a maze in the view.
+-> Clear View : Tombol untuk membersihkan layar.
 
--> Draw elements (button): This is used to draw the maze element that is selected in the Select-element chooser on to the view. This can be done by clicking (activating) this button once and then using the mouse to draw the element onto the view. Once the elements have been drawn this button can again be clicked (deactivated) to stop drawing the maze elements on to the view.
+-> Save this maze : Tombol untuk menyimpan peta dalam bentuk png.
 
--> Find an optimal path (button): Clicking this button will execute the A* path finding algorithm, for finding a path between the source patch and the destination patch. This will result in drawing the shortest path between the source and the destination, if one exists or notifying that such a path does not exist.
+-> Load a maze : Tombol untuk memanggil peta yang telah dibuat sebelumnya dalam bentuk png.
 
--> Clear View (button): Clicking this button clears the view but keeps the source and destination patches at their original locations.
+-> Warna :
+Putih : Rintangan
+Biru : Source
+Hijau : Tujuan
 
--> Save this maze (button): Clicking this button saves the maze as a ".png" (Portable Network Graphics) image file at a user defined location in the file system.
-
--> Load a maze (button): Clicking this button loads a maze (Portable Network Graphics) image file from the user defined location in the file system to the view, with the precondition that it should be a valid maze. An image is a valid maze if it has exactly one source patch and destination patch.
-
--> The notes to the right of the view define what the different colors of the patches mean. For example: White colored patches are obstacles, the blue and green patches are the source and destination respectively, etc.
-
--> The output text box: Displays the "shortest path length" after clicking the find an optimal path in terms of number of patches that had to be covered to reach the destination via the optimal path.
-
-## HOW IT WORKS
-
-The maze elements are drawn on the view by placing them at the X and Y coordinates of the mouse pointer once it is clicked and is inside the view.
-
-The Path finding uses the A* algorithm to calculate the shortest path between the source and the destination patch, by avoiding obstacles, as a list of patches and storing it as a variable named "path" with the path finding agent (turtle 0). Once the path is found it is traced by the agent to reach to the destination patch. As A* path finding is used the concept of "open" and "closed" lists are used, these lists contain unexplored and explored patches (nodes) respectively.
-
-With each step a patch is removed ("explored") from the open list (unexplored patches) and placed in the closed list (explored patches) with a precondition that the value of its knowledge plus heuristic cost function f(), is minimum. After this the parent patch (predecessor-node), g() (knowledge cost function), h() (heuristic cost function) and f() = g() + h() knowledge plus heuristic cost function) values of the removed patch's neighbors are updated accordingly, and these neighboring patches are added to the open list, if they are not already a part of the open list.
-
-Once the destination patch is reached (a node neighboring to the destination patch is explored) the search process ends. Search path is calculated by traversing through the parent patch of the neighbor of the destination which triggered the end of the search, all the way till the source patch. This path forms a list of patches, which is stored in the path variable of the agent.
-
-If a path does not exist from the source to the destination, ultimately all patches (reachable from the source) end up in the explored (close list) and the open list becomes empty. In which case we conclude that a path from the source to the destination does not exist.
-
-The save maze operation saves a copy of the view as a ".png" image to the filesystem and load maze operation loads (imports) and existing maze ".png" image on the file system into the view.
 
 ## HOW TO USE IT
 
-Press the setup button, choose elements from the Select-element chooser, click on the Draw elements button and design your own maze on the view using your mouse and clicking wherever you wish to place the selected element.
+1. Tekan setup button,pilih komponen yang ingin digambar dari select-element chooser.
+2. Aktifkan Draw elements button. Gunakan mouse untuk menggambar
+3. Tekan "Find an optimal path" button untuk melihat simulasi.
+4. Gunakan "Save this maze" untuk menyimpan peta dan "Load a maze" untuk memanggil peta yang ada
 
-Click on the "Find an optimal path" button to compute the shortest path from the source patch to the destination patch through your designed maze, once this is done the agent will navigate through this path from the source patch to the destination patch.
-
-Use "Save this maze" and "Load a maze" to export and import mazes to and from the file system respectively.
-
-## THINGS TO TRY
-
-Design different mazes and test the path finding on them.
-Change the locations of the source and destination patches for a maze and see its effect on the computed search path.
-There can be more than one optimal paths for reaching the destination, try making a maze in which this happens and observe the behavior of the algorithm in that case.
 
 
 ## CREDITS AND REFERENCES
